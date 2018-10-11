@@ -1,4 +1,5 @@
 import React from 'react'
+import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux'
 
 import TextField from '@material-ui/core/TextField';
@@ -6,7 +7,7 @@ import Button from '@material-ui/core/Button'
 import { withStyles } from '@material-ui/core/styles';
 
 import { login } from '../actions/actionSession'
-import { Redirect } from 'react-router-dom';
+import { testPassword, testEmail } from '../helpers/testPassword'
 
 const styles = theme => ({
     button: {
@@ -27,9 +28,17 @@ class Login extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            username: '',
+            email: 'max@test.com',
             password: '',
             redirectToPreviousRoute: false
+        }
+    }
+    componentDidUpdate() {
+        
+    }
+    componentWillUnmount() {
+        if (this.props.errorMsg) {
+            return this.setState({ password: '' })
         }
     }
     handleChange = (ev) => {
@@ -38,18 +47,30 @@ class Login extends React.Component {
     }
     handleSubmit = (ev) => {
         ev.preventDefault();
-        this.props.login(this.state, () => this.setState({ redirectToPreviousRoute: true }))
+        const { email, password } = this.state
+        this.props.login({ email, password }, () => this.setState({ redirectToPreviousRoute: true }))
     }
     handleEnter = (ev) => {
         if (ev.key === 'Enter') {
             this.handleSubmit(ev)
         }
     }
+
+    validate = () => {
+        const { email, password } = this.state
+        if (!testPassword(password)) {
+            return false
+        }
+        if (!testEmail(email)) {
+            return false
+        }
+        return true
+    }
+
     render() {
-        const { username, password, redirectToPreviousRoute } = this.state
+        const { email, password, redirectToPreviousRoute } = this.state
         const { classes, errorMsg, location } = this.props
         const { from } = location.state || { from: { pathname: '/' } }
-        console.log('loc', location.state);
         if (redirectToPreviousRoute) {
             return <Redirect to={from} />
         }
@@ -62,10 +83,10 @@ class Login extends React.Component {
                         className={classes.textField}
                         id="standard-name"
                         margin="normal"
-                        label="Name"
+                        label="Email"
                         type="text"
-                        name="username"
-                        value={username}
+                        name="email"
+                        value={email}
                         onChange={this.handleChange}
                     />
                     <TextField
@@ -84,6 +105,7 @@ class Login extends React.Component {
                         type="submit"
                         variant="contained"
                         color="primary"
+                        disabled={!this.validate()}
                         className={classes.button}>Login</Button>
                 </form>
             </div>

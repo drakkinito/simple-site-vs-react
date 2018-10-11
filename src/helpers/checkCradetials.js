@@ -1,5 +1,5 @@
 export const checkCradetials = (data) => {
-    if(data.username.toLowerCase() === 'a' || data.password === '1') {
+    if(data.status === 'ok') {
         return true
     }
     return false

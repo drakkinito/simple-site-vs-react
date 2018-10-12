@@ -17,5 +17,5 @@ const PrivateRouter = ({ component: Component, ...rest }) => {
 }
 
 export default connect(state => ({
-    isAuth: state.session.user
+    isAuth: state.session.user.id
 }))(PrivateRouter)

@@ -1,12 +1,12 @@
 import React from 'react'
 import { Redirect } from 'react-router-dom';
-import { connect } from 'react-redux'
 
+import { Loader } from './ui/Loader'
+import { ErrorMsg } from './ui/ErrorMsg'
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button'
 import { withStyles } from '@material-ui/core/styles';
 
-import { login } from '../actions/actionSession'
 import { testPassword, testEmail } from '../helpers/testPassword'
 
 const styles = theme => ({
@@ -29,16 +29,8 @@ class Login extends React.Component {
         super(props)
         this.state = {
             email: 'max@test.com',
-            password: '',
+            password: '12345',
             redirectToPreviousRoute: false
-        }
-    }
-    componentDidUpdate() {
-        
-    }
-    componentWillUnmount() {
-        if (this.props.errorMsg) {
-            return this.setState({ password: '' })
         }
     }
     handleChange = (ev) => {
@@ -49,6 +41,7 @@ class Login extends React.Component {
         ev.preventDefault();
         const { email, password } = this.state
         this.props.login({ email, password }, () => this.setState({ redirectToPreviousRoute: true }))
+        this.setState({ password: '' })
     }
     handleEnter = (ev) => {
         if (ev.key === 'Enter') {
@@ -69,14 +62,15 @@ class Login extends React.Component {
 
     render() {
         const { email, password, redirectToPreviousRoute } = this.state
-        const { classes, errorMsg, location } = this.props
+        const { classes, errorMsg, location, isLoading } = this.props
         const { from } = location.state || { from: { pathname: '/' } }
         if (redirectToPreviousRoute) {
             return <Redirect to={from} />
         }
         return (
             <div>
-                <span style={{ color: 'red', marginLeft: 10 }}>{errorMsg && errorMsg}</span>
+                {errorMsg && <ErrorMsg errorMsg={errorMsg} />}
+                {isLoading && <Loader />}
                 <form onSubmit={this.handleSubmit} style={{ width: 200 }} onKeyPress={this.handleEnter}>
                     <TextField
                         ref={this.textInput}
@@ -112,6 +106,4 @@ class Login extends React.Component {
         )
     }
 }
-export default connect(state => ({
-    errorMsg: state.session.errorMsg
-}), { login })(withStyles(styles)(Login))
+export default withStyles(styles)(Login)

@@ -1,9 +1,20 @@
 import React from 'react'
-import { connect } from 'react-redux'
 
+import ProfileContent from './ProfileContent'
+import { Loader } from './ui/Loader'
+import { ErrorMsg } from './ui/ErrorMsg'
 
-const Profile = ({ user }) => <h2>Profile: {user}</h2>
+const Profile = ({ username, data }) => {
+    const { isLoading, user, errorMsg } = data
 
-export default connect(state => ({
-    user: state.session.user.name
-}))(Profile)
+    return (
+        <div>
+            <h2>Профіль</h2>
+            {isLoading && <Loader />}
+            {errorMsg && <ErrorMsg errorMsg={errorMsg} />}
+            {user && <ProfileContent data={user} />}
+        </div>
+    )
+}
+
+export default Profile

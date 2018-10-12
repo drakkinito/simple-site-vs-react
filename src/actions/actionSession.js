@@ -2,21 +2,23 @@ import axios from 'axios'
 import * as t from '../constants'
 
 import { checkCradetials } from '../helpers/checkCradetials'
-import { defaultErrorMsg, url } from '../constants'
+import { errors, url } from '../constants'
 
 export const loginRequest = () => ({
     type: t.LOG_IN_REQUEST,
 })
 
-export const loginSuccess = (email) => ({
-    type: t.LOG_IN_SUCCESS,
-    payload: { email }
-})
-
-export const loginFailture = (errorMsg = defaultErrorMsg) => ({
+export const loginSuccess = (data, id) => {
+    localStorage.setItem('user', JSON.stringify(data.id))
+    return ({
+        type: t.LOG_IN_SUCCESS,
+        payload: { data }
+    })
+}
+export const loginFailture = (errorMsg) => ({
     type: t.LOG_IN_FAILTURE,
     payload: {
-        errorMsg
+        errorMsg: errors[errorMsg]
     },
     error: true
 })
@@ -32,7 +34,7 @@ export function login(data, cb) {
         })
             .then(res => {
                 if (checkCradetials(res.data)) {
-                    dispatch(loginSuccess(data.email))
+                    dispatch(loginSuccess(res.data.data))
                     cb()
                 } else {
                     dispatch(loginFailture(res.data.message))
@@ -45,6 +47,7 @@ export function login(data, cb) {
 }
 
 export function logout() {
+    localStorage.removeItem('user')
     return {
         type: t.LOG_OUT
     }

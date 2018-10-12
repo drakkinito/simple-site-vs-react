@@ -11,13 +11,14 @@ const styles = theme => ({
 })
 
 const LinkButton = (props) => {
-    const { path, lable, classes } = props
+    const { path, lable, classes, } = props
     return (
-        <Link to={path} style={{ textDecoration: 'none' }}>
-            <Button variant="contained" color="primary" className={classes.button}>
+        <Button variant="contained" color="primary" className={classes.button}>
+            <Link to={path} style={{ textDecoration: 'none', color: '#FFF' }}>
                 <span>{lable}</span>
-            </Button>
-        </Link>
+            </Link>
+
+        </Button>
     )
 }
 

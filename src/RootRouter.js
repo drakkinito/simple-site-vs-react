@@ -3,7 +3,8 @@ import { Route, Switch } from 'react-router-dom'
 
 import Home from './components/Home'
 import News from './components/News'
-import Login from './components/Login'
+import LoginButton from './components/LoginButton'
+import LoginContainer from './containers/LoginContainer'
 import LinkButton from './components/LinkButton'
 
 import PrivateRouter from './containers/PrivateRouter'
@@ -13,19 +14,19 @@ const RootRouter = () => {
     return (
         <div>
             <header>
-                <div>
+                <nav>
                     <LinkButton path='/' lable='Home' />
                     <LinkButton path='/profile' lable='Profile' />
                     <LinkButton path='/news' lable='News' />
-                    <LinkButton path='/login' lable='Login' />
-                </div>
+                    <LoginButton />
+                </nav>
             </header>
             <Switch>
                 <Route exact path='/' component={Home} />
                 <Route path='/news' component={News} />
-                <Route path='/login' component={Login} />
+                <Route path='/login' component={LoginContainer} />
                 <PrivateRouter path='/profile' component={ProfileContainer} />
-                <Route render={()=> <h2>nothing page</h2>} />
+                <Route render={() => <h2>nothing page</h2>} />
             </Switch>
         </div>
     )
